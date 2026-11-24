@@ -1,0 +1,680 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MR. HEAT - Spring Edition</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+#scene {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(
+        to bottom,
+        #1d3156,
+        #698fb7,
+        #f8c7d6
+    );
+    transition: background 5s;
+}
+
+#scene.day {
+    background: linear-gradient(
+        to bottom,
+        #70caff,
+        #b8edff,
+        #e5faff,
+        #ffddeb
+    );
+}
+
+/* START SCREEN */
+
+#startScreen {
+    position: absolute;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(10,20,35,0.35);
+    backdrop-filter: blur(5px);
+}
+
+#startBtn {
+    padding: 18px 36px;
+    border: 2px solid white;
+    border-radius: 50px;
+    background: linear-gradient(45deg,#ff477e,#ff9cbd);
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 0 30px #ff8bb5;
+    animation: pulse 1.5s infinite;
+    cursor: pointer;
+}
+
+@keyframes pulse {
+    50% { transform: scale(1.08); }
+}
+
+/* SUN */
+
+#sun {
+    position: absolute;
+    top: 9%;
+    right: 12%;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: #fff6a6;
+    box-shadow: 0 0 40px 20px #ffe77b;
+    opacity: 0;
+    transform: scale(.4);
+    transition: 4s;
+    z-index: 1;
+}
+
+#sun.show {
+    opacity: 1;
+    transform: scale(1);
+}
+
+#sunlight {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        circle at 85% 15%,
+        rgba(255,255,180,.5),
+        rgba(255,255,180,.15) 35%,
+        transparent 65%
+    );
+    opacity: 0;
+    transition: 4s;
+    z-index: 1;
+}
+
+#sunlight.show {
+    opacity: 1;
+}
+
+/* BIRDS RIGHT TO LEFT */
+
+.bird {
+    position: absolute;
+    right: -100px;
+    z-index: 4;
+    animation: flyRTL linear forwards;
+}
+
+@keyframes flyRTL {
+    0% {
+        transform: translateX(0) translateY(0);
+    }
+
+    30% {
+        transform: translateX(-35vw) translateY(-50px);
+    }
+
+    60% {
+        transform: translateX(-70vw) translateY(35px);
+    }
+
+    100% {
+        transform: translateX(-125vw) translateY(-15px);
+    }
+}
+
+/* RAIN */
+
+#rain {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 2s;
+    pointer-events: none;
+    z-index: 5;
+}
+
+#rain.show {
+    opacity: 1;
+}
+
+.drop {
+    position: absolute;
+    top: -30px;
+    width: 2px;
+    height: 17px;
+    background: rgba(255,255,255,.65);
+    animation: rainFall linear infinite;
+}
+
+@keyframes rainFall {
+    to {
+        transform: translateY(110vh);
+    }
+}
+
+/* RAINBOW */
+
+#rainbow {
+    position: absolute;
+    left: 50%;
+    bottom: 7%;
+    width: min(92vw, 600px);
+    height: min(46vh, 320px);
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 4s;
+    z-index: 2;
+}
+
+#rainbow.show {
+    opacity: .92;
+}
+
+.arc {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    border-radius: 600px 600px 0 0;
+    border-style: solid;
+    border-bottom: none;
+    transform: translateX(-50%);
+}
+
+.arc1 {
+    width: 100%;
+    height: 100%;
+    border-width: 17px;
+    border-color: #ff3838;
+}
+
+.arc2 {
+    width: 90%;
+    height: 90%;
+    border-width: 17px;
+    border-color: #ff9900;
+}
+
+.arc3 {
+    width: 80%;
+    height: 80%;
+    border-width: 17px;
+    border-color: #ffe600;
+}
+
+.arc4 {
+    width: 70%;
+    height: 70%;
+    border-width: 17px;
+    border-color: #38d66c;
+}
+
+.arc5 {
+    width: 60%;
+    height: 60%;
+    border-width: 17px;
+    border-color: #20b8ff;
+}
+
+.arc6 {
+    width: 50%;
+    height: 50%;
+    border-width: 17px;
+    border-color: #6256ff;
+}
+
+.arc7 {
+    width: 40%;
+    height: 40%;
+    border-width: 17px;
+    border-color: #bd4cff;
+}
+
+/* CLOUDS */
+
+.cloud {
+    position: absolute;
+    width: 160px;
+    height: 60px;
+    border-radius: 50px;
+    background: rgba(255,255,255,.9);
+    opacity: 0;
+    transition: 4s;
+    z-index: 6;
+}
+
+.cloud::before,
+.cloud::after {
+    content: "";
+    position: absolute;
+    background: inherit;
+    border-radius: 50%;
+}
+
+.cloud::before {
+    width: 75px;
+    height: 75px;
+    top: -35px;
+    left: 20px;
+}
+
+.cloud::after {
+    width: 95px;
+    height: 95px;
+    top: -45px;
+    left: 70px;
+}
+
+.cloud1 {
+    top: 18%;
+    left: -220px;
+}
+
+.cloud2 {
+    top: 32%;
+    right: -220px;
+}
+
+.cloud.show {
+    opacity: .85;
+}
+
+.cloud1.show {
+    left: 7%;
+}
+
+.cloud2.show {
+    right: 7%;
+}
+
+/* FALLING PETALS */
+
+.petal {
+    position: absolute;
+    top: -50px;
+    pointer-events: none;
+    z-index: 15;
+    animation: petalFall linear forwards;
+}
+
+@keyframes petalFall {
+    0% {
+        transform: translateY(-5vh) rotate(0deg);
+        opacity: 0;
+    }
+
+    10% { opacity: 1; }
+
+    30% {
+        transform: translate(40px,30vh) rotate(140deg);
+    }
+
+    60% {
+        transform: translate(-35px,65vh) rotate(350deg);
+    }
+
+    100% {
+        transform: translate(30px,115vh) rotate(720deg);
+        opacity: .2;
+    }
+}
+
+/* FLOWER BUNCH */
+
+.bunch {
+    position: absolute;
+    top: -100px;
+    z-index: 15;
+    pointer-events: none;
+    animation: bunchFall linear forwards;
+}
+
+.bunch span {
+    position: absolute;
+    display: inline-block;
+    animation: flowerSpin 3s ease-in-out infinite alternate;
+}
+
+@keyframes bunchFall {
+    0% {
+        transform: translateY(-10vh) translateX(0);
+        opacity: 0;
+    }
+
+    10% { opacity: 1; }
+
+    50% {
+        transform: translateY(50vh) translateX(50px);
+    }
+
+    100% {
+        transform: translateY(115vh) translateX(-40px);
+        opacity: .2;
+    }
+}
+
+@keyframes flowerSpin {
+    to { transform: rotate(50deg) scale(1.1); }
+}
+
+/* LOVE */
+
+#love {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    text-align: center;
+    z-index: 25;
+    transform: translate(-50%,-50%) scale(.2);
+    opacity: 0;
+    transition: 3s;
+    padding: 10px;
+}
+
+#love.show {
+    opacity: 1;
+    transform: translate(-50%,-50%) scale(1);
+}
+
+#love h1 {
+    font-size: clamp(42px,12vw,95px);
+    line-height: 1.05;
+    text-shadow: 0 0 18px rgba(255,255,255,.6);
+}
+
+.red {
+    color: #ff244c;
+}
+
+.pink {
+    color: #ff72b0;
+}
+
+.heart {
+    background: linear-gradient(45deg,#ff1744,#ff8bb9,#ff1744);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+#signature {
+    margin-top: 18px;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: #000000;
+    font-weight: 900;
+    text-shadow: 0 1px 2px white;
+}
+
+/* MUSIC PLAYER */
+
+#musicBox {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    width: 200px;
+    height: 112px;
+    overflow: hidden;
+    border-radius: 10px;
+    z-index: 80;
+    background: rgba(255,255,255,.2);
+}
+
+/* FINAL GLOW */
+
+#scene.final {
+    animation: glow 3s infinite alternate;
+}
+
+@keyframes glow {
+    from { filter: brightness(1); }
+    to { filter: brightness(1.12); }
+}
+
+@media(max-width:600px) {
+    .cloud {
+        transform: scale(.75);
+    }
+
+    #rainbow {
+        bottom: 10%;
+    }
+
+    #musicBox {
+        width: 160px;
+        height: 90px;
+    }
+
+    #signature {
+        font-size: 11px;
+        letter-spacing: 2px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="scene">
+
+    <div id="startScreen">
+        <button id="startBtn">TAP TO BEGIN ♥</button>
+    </div>
+
+    <div id="sun"></div>
+    <div id="sunlight"></div>
+
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+
+    <div id="rain"></div>
+
+    <div id="rainbow">
+        <div class="arc arc1"></div>
+        <div class="arc arc2"></div>
+        <div class="arc arc3"></div>
+        <div class="arc arc4"></div>
+        <div class="arc arc5"></div>
+        <div class="arc arc6"></div>
+        <div class="arc arc7"></div>
+    </div>
+
+    <div id="love">
+        <h1>
+            <span class="red">I</span><br>
+            <span class="pink">LOVE</span><br>
+            <span class="red">YOU</span><br>
+            <span class="heart">♥</span>
+        </h1>
+
+        <div id="signature">
+            CODED BY HR. SANJU RAI
+        </div>
+    </div>
+
+</div>
+
+<!-- MUSIC PLAYER -->
+<div id="musicBox"></div>
+
+<script>
+const scene = document.getElementById("scene");
+const rain = document.getElementById("rain");
+const musicBox = document.getElementById("musicBox");
+
+let started = false;
+
+/* START MUSIC USING YOUTUBE EMBED */
+
+function startMusic() {
+    musicBox.innerHTML = `
+    <iframe
+        width="200"
+        height="112"
+        src="https://www.youtube.com/embed/Jzyc5ynowtc?autoplay=1&playsinline=1&rel=0"
+        title="MR HEAT Music"
+        allow="autoplay; encrypted-media; picture-in-picture"
+        allowfullscreen
+        style="border:0;width:100%;height:100%">
+    </iframe>`;
+}
+
+/* BIRDS RIGHT TO LEFT */
+
+function createBird() {
+    const bird = document.createElement("div");
+    bird.className = "bird";
+    bird.innerHTML = "🕊️";
+
+    bird.style.top = (8 + Math.random() * 55) + "%";
+    bird.style.animationDuration = (5 + Math.random() * 4) + "s";
+    bird.style.fontSize = (20 + Math.random() * 22) + "px";
+
+    scene.appendChild(bird);
+
+    setTimeout(() => bird.remove(), 10000);
+}
+
+/* RAIN */
+
+function createRain() {
+    for (let i = 0; i < 140; i++) {
+        const drop = document.createElement("div");
+        drop.className = "drop";
+
+        drop.style.left = Math.random() * 100 + "%";
+        drop.style.animationDuration = (.4 + Math.random() * .7) + "s";
+        drop.style.animationDelay = Math.random() * 2 + "s";
+
+        rain.appendChild(drop);
+    }
+}
+
+/* PETALS */
+
+const petals = ["🌸","🌷","🍃","💮","🌼","🩷","🌺"];
+
+function createPetal() {
+    const p = document.createElement("div");
+    p.className = "petal";
+
+    p.innerText = petals[Math.floor(Math.random() * petals.length)];
+    p.style.left = Math.random() * 100 + "%";
+    p.style.fontSize = (15 + Math.random() * 25) + "px";
+    p.style.animationDuration = (6 + Math.random() * 7) + "s";
+
+    scene.appendChild(p);
+
+    setTimeout(() => p.remove(), 14000);
+}
+
+/* FLOWER BUNCH */
+
+function createBunch() {
+    const bunch = document.createElement("div");
+    bunch.className = "bunch";
+
+    bunch.style.left = Math.random() * 100 + "%";
+    bunch.style.animationDuration = (7 + Math.random() * 6) + "s";
+
+    const flowers = ["🌸","🌷","🌺","💮","🌼","🌻"];
+
+    for (let i = 0; i < 7; i++) {
+        const f = document.createElement("span");
+
+        f.innerText = flowers[Math.floor(Math.random() * flowers.length)];
+        f.style.left = (i * 20) + "px";
+        f.style.top = Math.random() * 40 + "px";
+        f.style.fontSize = (22 + Math.random() * 18) + "px";
+
+        bunch.appendChild(f);
+    }
+
+    scene.appendChild(bunch);
+
+    setTimeout(() => bunch.remove(), 15000);
+}
+
+/* BEGIN CINEMATIC */
+
+document.getElementById("startBtn").addEventListener("click", function() {
+
+    if (started) return;
+    started = true;
+
+    document.getElementById("startScreen").style.display = "none";
+
+    /* MUSIC + BIRDS AT SAME MOMENT */
+    startMusic();
+
+    for (let i = 0; i < 22; i++) {
+        setTimeout(createBird, i * 250);
+    }
+
+    /* RAIN */
+    setTimeout(() => {
+        createRain();
+        rain.classList.add("show");
+    }, 3500);
+
+    /* SUNLIGHT */
+    setTimeout(() => {
+        document.getElementById("sun").classList.add("show");
+        document.getElementById("sunlight").classList.add("show");
+        scene.classList.add("day");
+    }, 6000);
+
+    /* RAINBOW */
+    setTimeout(() => {
+        document.getElementById("rainbow").classList.add("show");
+    }, 8500);
+
+    /* CLOUDS */
+    setTimeout(() => {
+        document.querySelector(".cloud1").classList.add("show");
+        document.querySelector(".cloud2").classList.add("show");
+    }, 10500);
+
+    /* SPRING FLOWERS */
+    setTimeout(() => {
+        for (let i = 0; i < 35; i++) {
+            setTimeout(createPetal, i * 160);
+        }
+
+        for (let i = 0; i < 10; i++) {
+            setTimeout(createBunch, i * 500);
+        }
+
+        setInterval(createPetal, 230);
+        setInterval(createBunch, 1600);
+    }, 12000);
+
+    /* FINAL LOVE MESSAGE */
+    setTimeout(() => {
+        document.getElementById("love").classList.add("show");
+        scene.classList.add("final");
+    }, 15500);
+
+});
+</script>
+
+</body>
+  </html>
+  
