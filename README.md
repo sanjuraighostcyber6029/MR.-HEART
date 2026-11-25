@@ -46,7 +46,8 @@ YouTube Embed| Background music integration
 4. Open it in a modern web browser.
 5. Press TAP TO BEGIN ♥ to start the experience.
 
-git clone YOUR_REPOSITORY_URL
+git clone https://github.com/sanjuraighostcyber6029/MR.-HEART.git
+
 cd MR-HEAT
 
 Then open "index.html" in your browser.
@@ -57,12 +58,6 @@ The project integrates a YouTube video as background music.
 
 Note: Music playback requires an internet connection and browser permission for embedded YouTube playback. Some preview environments may block external embeds.
 
-📂 Project Structure
-
-MR-HEAT/
-│
-├── index.html
-└── README.md
 
 👨‍💻 Creator
 
